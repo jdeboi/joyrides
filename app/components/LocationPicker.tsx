@@ -92,7 +92,7 @@ const LocationPicker: React.FC<LocationPickerProps> = ({
                 className="block py-2.5 px-0 w-full text-sm bg-transparent border-0 border-b-2 border-gray-300 appearance-none text-white dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search for a location or click on map"
+                placeholder="Search for location or click map"
                 onKeyDown={(e) => {
                   if (e.key === "Enter") e.preventDefault();
                 }}
