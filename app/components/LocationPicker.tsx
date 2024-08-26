@@ -49,8 +49,11 @@ const LocationPicker: React.FC<LocationPickerProps> = ({
   const handleMapClick = (event: L.LeafletMouseEvent) => {
     const { lat, lng } = event.latlng;
     setMarkerPosition([lat, lng]);
+    const coordString = `[${lat}, ${lng}]`;
+    // setSearchQuery(coordString || "");
+
     if (onLocationSelect) {
-      onLocationSelect({ lat, lng }, "");
+      onLocationSelect({ lat, lng }, coordString);
     }
   };
 

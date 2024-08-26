@@ -82,6 +82,7 @@ export default function Home() {
 
   const closeModal = () => {
     setIsModalOpen(false);
+    window.scrollTo({ top: 0, behavior: "smooth" }); // Scrolls to the top
   };
 
   // submit form to mongodb
