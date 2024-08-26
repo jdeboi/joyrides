@@ -114,17 +114,17 @@ export default function Home() {
           <br></br>
           <p className="mb-3">
             <span className="text-slate-100">How it works:</span> You submit a
-            geographic location that you find special and delightful (and are
-            willing to share). I curate a regular series of rides + bevies + bar
-            stops + snacks to connect these places and our stories. Feel free to
-            submit as many locations as you like!
+            geographic location that you find special and delightful. I curate a
+            regular series of rides + bevies + bar stops + snacks to connect
+            these places and our stories. Feel free to submit as many locations
+            as you like!
           </p>
           <p className="mb-4">
             <span className="text-slate-100">For example:</span> You might share
             a hidden dock in a City Park lagoon, a cement plaque with a unique
-            history, your favorite sourdough loaf, the place you first fell in
-            love with NOLA (or your special person) ... think Atlas Obscura
-            meets NOLA social ride.
+            history, your favorite sourdough loaf, a native plant garden, the
+            place you first fell in love with NOLA (or your special person) ...
+            think Atlas Obscura meets NOLA social ride.
           </p>
         </div>
         <br></br>
