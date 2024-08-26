@@ -98,7 +98,9 @@ export default function Home() {
         <h1 className="mb-4 text-4xl leading-none tracking-tight md:text-5xl lg:text-6xl text-white">
           joyrides
         </h1>
-        <p className="mb-4 italic text-sm">monthly bike rides to incite joy</p>
+        <p className="mb-4 italic text-sm">
+          a monthly bike ride to incite joy!
+        </p>
         <br></br>
         <p className="mb-3">
           <span className="text-slate-100">How it works:</span> You submit a
@@ -110,13 +112,13 @@ export default function Home() {
         <p className="mb-4">
           <span className="text-slate-100">For example:</span> You might share a
           hidden dock in a City Park lagoon, a cement plaque with a unique
-          history, your favorite sourdough, the place you first fell in love
-          with NOLA (or your special person) ... think Atlas Obscura meets
-          social ride.
+          history, your favorite sourdough loaf, the place you first fell in
+          love with NOLA (or your special person) ... think Atlas Obscura meets
+          NOLA social ride.
         </p>
       </div>
       <br></br>
-      <div className="w-full">
+      <div className="w-full mb-14">
         <form className="max-w-md mx-auto" onSubmit={handleSubmit}>
           <div className="relative z-0 w-full mb-5 group">
             <input

@@ -1,25 +1,16 @@
-// components/LocationPicker.tsx
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import axios from "axios";
 import L, { LatLngExpression } from "leaflet";
-import {
-  useJsApiLoader,
-  GoogleMap,
-  Autocomplete,
-} from "@react-google-maps/api";
+import { useJsApiLoader, Autocomplete } from "@react-google-maps/api";
 
-// Define an SVG icon directly as a Leaflet icon
 const customMarkerIcon = new L.DivIcon({
   html: `<svg version="1.1" id="icons" xmlns="http://www.w3.org/2000/svg" x="0" y="0" viewBox="0 0 128 128" style="enable-background:new 0 0 128 128" xml:space="preserve"><style>.st0,.st1{display:none;fill:#191919}.st1,.st4{fill-rule:evenodd;clip-rule:evenodd}.st4,.st5{display:inline;fill:#191919}</style><g id="row1"><path id="nav:4" d="M64 1C38.8 1 18.3 21.2 18.3 46S64 127 64 127s45.7-56.2 45.7-81S89.2 1 64 1zm0 73.9c-16.6 0-30-13.2-30-29.5C34 29 47.4 15.8 64 15.8S94 29 94 45.3 80.6 74.9 64 74.9z" style="fill-rule:evenodd;clip-rule:evenodd;fill:red"/></g></svg>`,
-
   className: "",
-  iconSize: [24, 24],
-  iconAnchor: [12, 24], // Anchor the icon bottom center
+  iconSize: [30, 30],
+  iconAnchor: [12, 24],
 });
 
-// Define the props interface
 interface LocationPickerProps {
   onLocationSelect?: (
     location: { lat: number; lng: number },
@@ -27,7 +18,6 @@ interface LocationPickerProps {
   ) => void;
 }
 
-// Your Google Maps API key
 const googleMapsApiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "";
 
 const LocationPicker: React.FC<LocationPickerProps> = ({
@@ -37,20 +27,26 @@ const LocationPicker: React.FC<LocationPickerProps> = ({
     null
   );
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const mapRef = useRef<L.Map | null>(null); // Ref to store the map instance
+  const mapRef = useRef<L.Map | null>(null);
   const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
   const newOrleans: L.LatLngExpression = [29.95, -90.1];
-
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey,
-    libraries: ["places"], // Load the places library for autocomplete
+    libraries: ["places"],
   });
+
+  useEffect(() => {
+    if (mapRef.current && markerPosition) {
+      // Safely update the map view after ensuring the map and markerPosition are ready
+      mapRef.current.setView(markerPosition, 13);
+    }
+  }, [markerPosition]); // Dependency array includes markerPosition
 
   const handleMapClick = (event: L.LeafletMouseEvent) => {
     const { lat, lng } = event.latlng;
     setMarkerPosition([lat, lng]);
     const coordString = `[${lat}, ${lng}]`;
-    setSearchQuery(coordString || "");
+    setSearchQuery(coordString);
 
     if (onLocationSelect) {
       onLocationSelect({ lat, lng }, coordString);
@@ -69,25 +65,20 @@ const LocationPicker: React.FC<LocationPickerProps> = ({
         if (onLocationSelect) {
           onLocationSelect({ lat: lat!, lng: lng! }, place.name || "");
         }
-        // Zoom to the new location
-        if (mapRef.current) {
-          mapRef.current.setView(newLocation, 13);
-        }
       }
     }
   };
 
-  // Custom hook to attach map click event
   const MapEvents = () => {
     const map = useMap();
-    mapRef.current = map; // Store the map instance in the ref
+    mapRef.current = map;
     map.on("click", handleMapClick);
     return null;
   };
 
   return (
     <div className="mb-2">
-      <div className="flex items-center space-x-2 mb-2">
+      <div className="flex items-center space-x-2 mb-4">
         {isLoaded && (
           <div className="w-full">
             <Autocomplete
@@ -101,7 +92,7 @@ const LocationPicker: React.FC<LocationPickerProps> = ({
                 className="block py-2.5 px-0 w-full text-sm bg-transparent border-0 border-b-2 border-gray-300 appearance-none text-white dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search for a location or pick on map"
+                placeholder="Search for a location or click on map"
                 onKeyDown={(e) => {
                   if (e.key === "Enter") e.preventDefault();
                 }}
@@ -118,11 +109,13 @@ const LocationPicker: React.FC<LocationPickerProps> = ({
         </button>
       </div>
       <MapContainer
-        key={markerPosition ? markerPosition.toString() : "initial-map"}
         center={newOrleans}
         minZoom={12}
         zoom={12}
         style={{ height: "400px", width: "100%" }}
+        whenReady={({ target }) => {
+          mapRef.current = target; // Set the map reference correctly
+        }}
       >
         <TileLayer
           url={`https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/256/{z}/{x}/{y}@2x?access_token=${process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}`}
