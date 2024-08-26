@@ -37,10 +37,15 @@ const LocationPicker: React.FC<LocationPickerProps> = ({
 
   useEffect(() => {
     if (mapRef.current && markerPosition) {
-      // Safely update the map view after ensuring the map and markerPosition are ready
-      mapRef.current.setView(markerPosition, 13);
+      // Get the current zoom level
+      const currentZoom = mapRef.current.getZoom();
+      // Use flyTo to smoothly transition to the new marker position while keeping the current zoom level
+      mapRef.current.flyTo(markerPosition, currentZoom, {
+        animate: true,
+        duration: 1, // Adjust the duration for the smooth transition effect
+      });
     }
-  }, [markerPosition]); // Dependency array includes markerPosition
+  }, [markerPosition]);
 
   const handleMapClick = (event: L.LeafletMouseEvent) => {
     const { lat, lng } = event.latlng;
@@ -89,7 +94,7 @@ const LocationPicker: React.FC<LocationPickerProps> = ({
             >
               <input
                 type="text"
-                className="appearance-none bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                className="appearance-none bg-gray-50 border border-gray-300 text-gray-900 text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search for location or click map"
