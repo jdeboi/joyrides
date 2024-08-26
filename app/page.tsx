@@ -23,6 +23,11 @@ export default function Home() {
   const [searchDescription, setSearchDescription] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false); // State to control modal visibility
 
+  useEffect(() => {
+    // Force dark mode by adding the 'dark' class to the HTML element
+    document.documentElement.classList.add("dark");
+  }, []);
+
   const handleLocationSelect = (
     location: { lat: number; lng: number },
     description: string
@@ -88,7 +93,7 @@ export default function Home() {
   // submit form to mongodb
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
+    <main className="flex min-h-screen flex-col items-center justify-between p-8 md:p-14 lg:p-24">
       <div className="text-slate-400 mb-4">
         <h1 className="mb-4 text-4xl leading-none tracking-tight md:text-5xl lg:text-6xl text-white">
           joyrides
