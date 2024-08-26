@@ -1,39 +1,52 @@
-// app/api/submit/route.ts
 import { NextResponse } from "next/server";
-import clientPromise from "@/lib/mongodb";
+import clientPromise from "@/lib/mongodb"; // Make sure this path is correct
+import { Db, MongoClient } from "mongodb";
+
+// Define a TypeScript interface for the incoming request data
+interface SubmitRequestBody {
+  name: string;
+  phone: string;
+  email: string;
+  title: string;
+  description: string;
+  searchDescription: string;
+  location: {
+    lat: number;
+    lng: number;
+  };
+}
 
 export async function POST(request: Request) {
-  const {
-    name,
-    phone,
-    email,
-    title,
-    description,
-    searchDescription,
-    location,
-  } = await request.json();
-
-  if (!name || !email || !phone || !location) {
-    return NextResponse.json(
-      { message: "Missing required fields" },
-      { status: 400 }
-    );
-  }
-
   try {
-    const client = await clientPromise;
-    const db = client.db("joyrides"); // Use your database name here
+    // Parse the request body as JSON
+    const data: SubmitRequestBody = await request.json();
+    console.log("Received data:", data);
 
-    // Check if the collection exists; create it if not
-    const collections = await db.listCollections().toArray();
-    const collectionNames = collections.map((col) => col.name);
+    const {
+      name,
+      phone,
+      email,
+      title,
+      description,
+      searchDescription,
+      location,
+    } = data;
 
-    if (!collectionNames.includes("locations")) {
-      await db.createCollection("locations");
+    // Validate required fields
+    if (!name || !email || !phone || !location) {
+      console.error("Missing required fields");
+      return NextResponse.json(
+        { message: "Missing required fields" },
+        { status: 400 }
+      );
     }
 
-    const collection = db.collection("locations"); // Collection name
+    // Get the MongoDB client and database
+    const client: MongoClient = await clientPromise;
+    const db: Db = client.db("joyrides");
+    const collection = db.collection("locations");
 
+    // Insert the document into the database
     const result = await collection.insertOne({
       name,
       phone,
@@ -45,14 +58,17 @@ export async function POST(request: Request) {
       createdAt: new Date(),
     });
 
+    console.log("Insert result:", result);
+
+    // Return a success response
     return NextResponse.json({
       message: "Form data saved successfully",
       result,
     });
-  } catch (error) {
-    console.error("Error saving form data:", error);
+  } catch (error: any) {
+    console.error("Error:", error);
     return NextResponse.json(
-      { message: "Error saving form data", error },
+      { message: "Error saving form data", error: error.message },
       { status: 500 }
     );
   }
