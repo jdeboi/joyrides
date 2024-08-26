@@ -113,9 +113,9 @@ const LocationPicker: React.FC<LocationPickerProps> = ({
         minZoom={12}
         zoom={12}
         style={{ height: "400px", width: "100%" }}
-        whenReady={({ target }) => {
-          mapRef.current = target; // Set the map reference correctly
-        }}
+        // whenReady={({ target }) => {
+        //   mapRef.current = target; // Set the map reference correctly
+        // }}
       >
         <TileLayer
           url={`https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/256/{z}/{x}/{y}@2x?access_token=${process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}`}
