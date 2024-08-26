@@ -1,8 +1,8 @@
+// app/api/submit/route.ts
 import { NextResponse } from "next/server";
-import clientPromise from "@/lib/mongodb"; // Make sure this path is correct
+import clientPromise from "@/lib/mongodb";
 import { Db, MongoClient } from "mongodb";
 
-// Define a TypeScript interface for the incoming request data
 interface SubmitRequestBody {
   name: string;
   phone: string;
@@ -17,8 +17,8 @@ interface SubmitRequestBody {
 }
 
 export async function POST(request: Request) {
+  const startTime = Date.now();
   try {
-    // Parse the request body as JSON
     const data: SubmitRequestBody = await request.json();
     console.log("Received data:", data);
 
@@ -32,7 +32,6 @@ export async function POST(request: Request) {
       location,
     } = data;
 
-    // Validate required fields
     if (!name || !email || !phone || !location) {
       console.error("Missing required fields");
       return NextResponse.json(
@@ -41,12 +40,10 @@ export async function POST(request: Request) {
       );
     }
 
-    // Get the MongoDB client and database
     const client: MongoClient = await clientPromise;
     const db: Db = client.db("joyrides");
     const collection = db.collection("locations");
 
-    // Insert the document into the database
     const result = await collection.insertOne({
       name,
       phone,
@@ -60,7 +57,9 @@ export async function POST(request: Request) {
 
     console.log("Insert result:", result);
 
-    // Return a success response
+    const endTime = Date.now();
+    console.log(`Function executed in ${endTime - startTime} ms`);
+
     return NextResponse.json({
       message: "Form data saved successfully",
       result,
