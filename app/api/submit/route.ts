@@ -1,15 +1,15 @@
 // app/api/submit/route.ts
 import { NextResponse } from "next/server";
-import clientPromise from "@/lib/mongodb";
-import { Db, MongoClient } from "mongodb";
+import dbConnect from "../../../utils/dbConnect"; // Ensure path is correct
+import Submission from "../../../models/Submission"; // Ensure path is correct
 
 interface SubmitRequestBody {
   name: string;
   phone: string;
   email: string;
-  title: string;
-  description: string;
-  searchDescription: string;
+  title?: string;
+  description?: string;
+  searchDescription?: string;
   location: {
     lat: number;
     lng: number;
@@ -18,7 +18,9 @@ interface SubmitRequestBody {
 
 export async function POST(request: Request) {
   const startTime = Date.now();
+
   try {
+    // Parse the incoming request body
     const data: SubmitRequestBody = await request.json();
     console.log("Received data:", data);
 
@@ -32,6 +34,7 @@ export async function POST(request: Request) {
       location,
     } = data;
 
+    // Validate required fields
     if (!name || !email || !phone || !location) {
       console.error("Missing required fields");
       return NextResponse.json(
@@ -40,11 +43,11 @@ export async function POST(request: Request) {
       );
     }
 
-    const client: MongoClient = await clientPromise;
-    const db: Db = client.db("joyrides");
-    const collection = db.collection("locations");
+    // Connect to the database
+    await dbConnect();
 
-    const result = await collection.insertOne({
+    // Create a new submission document using the Mongoose model
+    const newSubmission = new Submission({
       name,
       phone,
       email,
@@ -52,8 +55,10 @@ export async function POST(request: Request) {
       description,
       searchDescription,
       location,
-      createdAt: new Date(),
     });
+
+    // Save the submission document to the database
+    const result = await newSubmission.save();
 
     console.log("Insert result:", result);
 

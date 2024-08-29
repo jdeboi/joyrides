@@ -9,18 +9,23 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@mapbox/mapbox-gl-geocoder": "^5.0.2",
     "@react-google-maps/api": "^2.19.3",
     "axios": "^1.7.5",
     "bootstrap": "^5.3.3",
     "leaflet": "^1.9.4",
+    "mapbox-gl": "^3.6.0",
     "mongodb": "^6.8.0",
+    "mongoose": "^8.6.0",
     "next": "14.2.5",
     "react": "^18",
     "react-dom": "^18",
-    "react-leaflet": "^4.2.1"
+    "react-leaflet": "^4.2.1",
+    "react-map-gl": "^7.1.7"
   },
   "devDependencies": {
     "@types/leaflet": "^1.9.12",
+    "@types/mongoose": "^5.11.97",
     "@types/node": "^20",
     "@types/react": "^18.3.4",
     "@types/react-dom": "^18",
